@@ -22,123 +22,129 @@ namespace ArrayList
             isEmpty = true;
         }
 
-        //public arrayList(int cap)
-        //{
-        //    data = new int[cap];
-        //    capacity = cap;
-        //}
+        public void IsEmpty()
+        {
+            if (count > 0)
+            {
+                isEmpty = false;
+            }
+            else
+            {
+               isEmpty = true;
+            }
+        }
 
         public int Get(int index)
         {
             int ind = int.MaxValue;
-            if(index<capacity)
+            if (index < count && index > -1)
             {
                 ind = data[index];
             }
-            
+            else
+            {
+                throw new ArgumentException();
+            }
 
             return ind;
         }
 
         public string Set(int index, int value)
         {
-            StringBuilder sb = new StringBuilder();
-            if (index <= count)
+            if (index < count && index > -1)
             {
                 data[index] = value;
                 count += 1;
-
-                for (int i = 0; i < count; i++)
-                {
-                    sb.Append(data[i]);
-                    sb.Append(" ");
-                }
             }
-
-            if (count == capacity)
+            else
             {
-                Resize();
+                throw new ArgumentException();
             }
-            return sb.ToString();
+            
+            return print();
         }
 
         public string Insert(int index, int value)
         {
-            int[] temp = new int[capacity];
-            StringBuilder sb = new StringBuilder();
-
-            if (index <= count)
+            if (index <= count && index > -1)
             {
-                for (int i = 0; i <= count; i++)
+                for (int i = count; i >= index; i--)
                 {
-                    if (i < index)
+                    if (i != index)
                     {
-                        temp[i] = data[i];
+                        data[i] = data[i - 1];
                     }
-                    else if (i > index)
+                    else
                     {
-                        temp[i] = data[i - 1];
+                        data[i] = value;
                     }
-                    else if (i == index)
-                    {
-                        temp[i] = value;
-                    }
-                    sb.Append(temp[i]);
-                    sb.Append(" ");
                 }
+                count += 1;
             }
-            
-            count += 1;
-
-            data = temp;
+            else
+            {
+                throw new ArgumentException();
+            }
 
             if (count == capacity)
             {
                 Resize();
             }
+            IsEmpty();
 
-            return sb.ToString();
+            return print();
         }
 
-        public void Delete(int index)
+        public string Delete(int index)
         {
-            int[] temp = new int[capacity];
-
-            for (int i = 0; i < count; i++)
+            if (index < count && index > -1)
             {
-                if (i < index)
+                for (int i = index; i < count; i++)
                 {
-                    temp[i] = data[i];
+                    data[i] = data[i + 1];
                 }
-                else if(i>index)
-                {
-                    temp[i - 1] = data[i];
-                }
+                data[count] = 0;
+
+                count -= 1;
             }
-            data = temp;
-            count -= 1;
+            else
+            {
+                throw new ArgumentException();
+            }
+            IsEmpty();
+            return print();
         }
 
         public bool Contaions(int value)
         {
             bool flag = false;
-
-            for (int i = 0; i < count; i++)
+            if (!isEmpty)
             {
-                if (data[i] == value)
+                for (int i = 0; i < count; i++)
                 {
-                    flag = true;
-                    return flag;
+                    if (data[i] == value)
+                    {
+                        flag = true;
+                        return flag;
+                    }
                 }
             }
-
+            else
+            {
+                throw new ArgumentNullException();
+            }
+            
             return flag;
         }
 
-        public void Add(int value)
+        public string Add(int value)
         {
             data[count] = value;
             count += 1;
+
+            IsEmpty();
+
+            return print();
         }
 
         public void Resize()
@@ -154,9 +160,25 @@ namespace ArrayList
             data = temp;
         }
 
-        public void print()
+        public string print()
         {
+            StringBuilder sb = new StringBuilder();
             
+            if (!isEmpty)
+            {
+                sb.Append("[");
+                for (int i = 0; i < count - 1; i++)
+                {
+                    sb.Append(data[i] + ",");
+                }
+                sb.Append(data[count - 1] + "]");
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+
+            return sb.ToString();
         }
     }
 }
